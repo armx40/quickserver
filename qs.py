@@ -1,36 +1,38 @@
 import socket
 from _thread import *
 from sys import argv
+import argparse
 
 HOST="127.0.0.1"
 PORT=8080
 RECV_BYTES=100
 REQ_NO=1
+MSG="hello client"
 
-if len(argv) > 0:
-	try:
-		if (len(argv[1]) > 0):
-			HOST = argv[1]
-			
-		if (len(argv[2]) > 0):
-			PORT = argv[2]
-		
-		if (len(argv[3]) > 0):
-			RECV_BYTES = argv[3]
-		
-	except Exception as e:
-		print("")
-		print("!---Some of the arguments are not specified. Using default values---!") 
-		print("")
-		
+parser = argparse.ArgumentParser(description='quickserver arguments')
+
+parser.add_argument('-H',help="Host")
+parser.add_argument('-P',help="Port")
+parser.add_argument('-M',help="Message to client")
+parser.add_argument('-B',help="Number of bytes to receive from the client")
+
+args = parser.parse_args()
+args = vars(args)
+
+if args['H'] is not None:
+	HOST = args['H']
+if args['P'] is not None:
+	PORT = int(args['P'])
+if args['M'] is not None:
+	MSG = args['M']
+if args['B'] is not None:
+	RECV_BYTES = int(args['B'])
+
 def respond(c,addr,recv_bytes):
 	global REQ_NO
-	
-	msg = "Thanks for connecting!"
-	
 	response_headers = {
 		'Content-Type': 'text/html; encoding=utf8',
-		'Content-Length': len(msg),
+		'Content-Length': len(MSG),
 		'Connection': 'close',
 	}
 
@@ -40,7 +42,7 @@ def respond(c,addr,recv_bytes):
 	response_status = '200'
 	response_status_text = 'OK' # this can be random
 
-	r = ('%s %s %s\r\n' % (response_proto, response_status, response_status_text) + response_headers_raw + '\r\n' + msg)
+	r = ('%s %s %s\r\n' % (response_proto, response_status, response_status_text) + response_headers_raw + '\r\n' + MSG)
 	c.send(r.encode("utf-8"))
 	#c.send(response_headers_raw.encode("utf-8"))
 	#c.send('\r\n'.encode("utf-8"))
@@ -55,7 +57,7 @@ def respond(c,addr,recv_bytes):
 s=socket.socket()
 s.bind((HOST,PORT))
 s.listen(5)
-print("Server Started at\nHOST: {}\nPORT: {}\nRECV_BYTES: {}".format(HOST,PORT,RECV_BYTES))	
+print("server started at\nHOST: {}\nPORT: {}\nRECV_BYTES: {}\nMESSAGE: {}".format(HOST,PORT,RECV_BYTES,MSG))	
 while True:
 	c,addr = s.accept()
 	start_new_thread(respond,(c,addr,RECV_BYTES))
