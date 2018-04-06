@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser(description='quickserver arguments')
 
 parser.add_argument('-H',help="Host")
 parser.add_argument('-P',help="Port")
-parser.add_argument('-M',help="Message to client")
+parser.add_argument('-M',help="Message to the client")
 parser.add_argument('-B',help="Number of bytes to receive from the client")
 
 args = parser.parse_args()
