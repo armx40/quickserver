@@ -1,6 +1,5 @@
 import socket
 from _thread import *
-from sys import argv
 import argparse
 
 HOST="127.0.0.1"
