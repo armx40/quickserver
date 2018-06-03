@@ -28,8 +28,7 @@ def respond(c, addr, RECV_BYTES_, response_function_, http_response_, log_, log_
         response_proto = 'HTTP/1.1'
         response_status = '200'
         response_status_text = 'OK'
-        r = ('%s %s %s\r\n' % (response_proto, response_status,
-                               response_status_text) + response_headers_raw + '\r\n' + res)
+        r = ('%s %s %s\r\n' % (response_proto, response_status,response_status_text) + response_headers_raw + '\r\n' + res)
     else:
         r = res
     c.send(r.encode("utf-8"))
